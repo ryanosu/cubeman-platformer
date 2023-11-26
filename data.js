@@ -1,0 +1,1 @@
+// on-screen data such as health, lives, score, and timer

@@ -1,0 +1,7 @@
+6 rows:
+0: Idle (SITTING)
+1: Running
+2: Jumping Up (JUMPING)
+3: Jumping Down (FALLING)
+4: Bruised
+5: Attack
