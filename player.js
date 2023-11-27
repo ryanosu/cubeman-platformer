@@ -9,13 +9,56 @@ export class Player{
         this.widthScaled = this.width * this.scale
         this.heightScaled = this.height * this.scale
         this.x = 0
-        this.y = 100
+        this.y = this.height
         this.image = document.getElementById('player')
         this.spriteFrameX = 0
         this.spriteFrameY = 0
+        this.maxSpriteFrameX = 20
+        this.playerSpeed = 0
+        this.fullSpeed = 10
+        this.frameTimer = 0
+        this.fps = 30
+        this.frameInterval = 1000/this.fps
     }
 
-    update(){
+    update(input, deltaTime){
+        
+        // horiztonal movement
+        this.x += this.playerSpeed
+        if (input.includes('ArrowRight')){
+            this.playerSpeed = this.fullSpeed
+        } else if (input.includes('ArrowLeft')){
+            this.playerSpeed = -this.fullSpeed
+        } else {
+            this.playerSpeed = 0
+        }
+
+        // block character at boundaries
+        // left boundary
+        if (this.x < 0) {
+            this.x = 0
+        }
+        // right boundary
+        if (this.x > this.game.width - this.widthScaled){
+            this.x = this.game.width - this.widthScaled
+        }
+
+        // sprite animation
+        // 1 frame interval complete
+        if (this.frameTimer > this.frameInterval){
+            this.frameTimer = 0
+            
+            // after 1 frame is complete, go to the next sprite or loop back to 0-index
+            if (this.spriteFrameX < this.maxSpriteFrameX){
+                this.spriteFrameX++
+                console.log(this.spriteFrameX)
+            } else {
+                this.spriteFrameX = 0
+            }
+        }
+        else {
+            this.frameTimer += deltaTime
+        }
     }
 
     draw(context){

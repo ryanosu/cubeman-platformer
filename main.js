@@ -1,5 +1,6 @@
 import { Background } from "./background.js"
 import { Player } from "./player.js"
+import { InputHandler } from "./input.js"
 
 window.addEventListener('load', function(){
         const canvas = this.document.getElementById('canvas1')
@@ -12,12 +13,15 @@ window.addEventListener('load', function(){
                 this.width = width
                 this.height = height
                 this.speed = 0
+                this.groundMargin = 50
                 this.background = new Background(this)
                 this.player = new Player(this)
+                this.input = new InputHandler()
             }
             
-            update(){
+            update(deltaTime){
                 this.background.update()
+                this.player.update(this.input.keys, deltaTime)
             }
 
             draw(context){
@@ -28,13 +32,16 @@ window.addEventListener('load', function(){
 
         // create game instance
         const game = new Game(canvas.width, canvas.height)
+        let prevTime = 0
 
         // animation loop
-        function animate(){
+        function animate(timeStamp){
+            const deltaTime = timeStamp - prevTime
+            prevTime = timeStamp
             ctx.clearRect(0,0,canvas.width, canvas.height)
-            game.update()
+            game.update(deltaTime)
             game.draw(ctx)
             requestAnimationFrame(animate)
         }
-        animate()
+        animate(0)
 })
