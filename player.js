@@ -55,6 +55,7 @@ export class Player{
 
         // vertical movement
         this.y += this.jump // jump starts at 0 and only increments in JUMPING state
+        this.y += this.jump // does not make the full jump without second one
 
         if(!this.onGround()){
             this.jump += this.gravity
