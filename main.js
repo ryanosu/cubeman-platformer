@@ -11,11 +11,13 @@ window.addEventListener('load', function(){
             constructor(width, height){
                 this.width = width
                 this.height = height
+                this.speed = 0
                 this.background = new Background(this)
                 this.player = new Player(this)
             }
             
             update(){
+                this.background.update()
             }
 
             draw(context){
@@ -30,6 +32,7 @@ window.addEventListener('load', function(){
         // animation loop
         function animate(){
             ctx.clearRect(0,0,canvas.width, canvas.height)
+            game.update()
             game.draw(ctx)
             requestAnimationFrame(animate)
         }
