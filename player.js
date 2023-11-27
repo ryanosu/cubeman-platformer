@@ -1,10 +1,12 @@
+import { Idle, Running} from "./playerStates.js"
+
 // cubeman will go here
 
 export class Player{
     constructor(game){
         this.game = game
         this.width = 1502 // 33,046/22 = 1,502
-        this.height = 1005 // 6,030/6 = 1005
+        this.height = 1005 // 6,030/6 = 1,005
         this.scale = 0.3
         this.widthScaled = this.width * this.scale
         this.heightScaled = this.height * this.scale
@@ -19,10 +21,16 @@ export class Player{
         this.frameTimer = 0
         this.fps = 30
         this.frameInterval = 1000/this.fps
+        this.states = [new Idle(this), new Running(this)]
+        this.currentState = this.states[0]
+        this.currentState.enter() // performs enter() in playerStates.js, which updates this.player sprite params
     }
 
     update(input, deltaTime){
         
+        // update player state
+        this.currentState.handleInput(input)
+
         // horiztonal movement
         this.x += this.playerSpeed
         if (input.includes('ArrowRight')){
@@ -51,7 +59,7 @@ export class Player{
             // after 1 frame is complete, go to the next sprite or loop back to 0-index
             if (this.spriteFrameX < this.maxSpriteFrameX){
                 this.spriteFrameX++
-                console.log(this.spriteFrameX)
+                
             } else {
                 this.spriteFrameX = 0
             }
@@ -73,5 +81,11 @@ export class Player{
             this.widthScaled, // destination rectangle width on canvas
             this.heightScaled // destination rectangle height on canvas
         )
+    }
+
+    setState(state, speed){
+        this.currentState = this.states[state] // make the switch
+        this.game.speed = this.game.maxSpeed * speed
+        this.currentState.enter() // perform the action
     }
 }
