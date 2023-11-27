@@ -1,4 +1,4 @@
-import { Idle, Running, Jumping, Falling} from "./playerStates.js"
+import { Idle, Running, Jumping, Falling, Attacking, Brusing} from "./playerStates.js"
 
 // cubeman will go here
 
@@ -23,7 +23,7 @@ export class Player{
         this.frameInterval = 1000/this.fps
         this.gravity = 1
         this.jump = 0
-        this.states = [new Idle(this), new Running(this), new Jumping(this), new Falling(this)]
+        this.states = [new Idle(this), new Running(this), new Jumping(this), new Falling(this), new Attacking(this), new Brusing(this)]
         this.currentState = this.states[0]
         this.currentState.enter() // performs enter() in playerStates.js, which updates this.player sprite params
     }
@@ -54,8 +54,8 @@ export class Player{
         }
 
         // vertical movement
-        this.y += this.jump // jump starts at 0 and only increments in JUMPING state
-        this.y += this.jump // does not make the full jump without second one
+        this.y += this.jump *2// jump starts at 0 and only increments in JUMPING state
+        //this.y += this.jump // does not make the full jump without second one
 
         if(!this.onGround()){
             this.jump += this.gravity

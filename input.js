@@ -11,6 +11,7 @@ export class InputHandler{
                 e.key === 'ArrowUp' ||
                 e.key === 'ArrowLeft' ||
                 e.key === 'ArrowRight' ||
+                e.key === 'p' || // debug for bruised
                 e.key === 'Control') && 
                 this.keys.indexOf(e.key) === -1){ // if key not already in array
                     this.keys.push(e.key)
@@ -24,6 +25,7 @@ export class InputHandler{
                 e.key === 'ArrowUp' ||
                 e.key === 'ArrowLeft' ||
                 e.key === 'ArrowRight' ||
+                e.key === 'p' || // debug for bruised
                 e.key === 'Control'){
                     this.keys.splice(this.keys.indexOf(e.key),1) // 2 args: index, how many elements to remove at that index
             }

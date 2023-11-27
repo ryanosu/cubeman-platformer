@@ -1,6 +1,7 @@
 import { Background } from "./background.js"
 import { Player } from "./player.js"
 import { InputHandler } from "./input.js"
+import { Data } from "./data.js"
 
 window.addEventListener('load', function(){
         const canvas = this.document.getElementById('canvas1')
@@ -15,12 +16,17 @@ window.addEventListener('load', function(){
                 this.gameSpeed = 0
                 this.fullGameSpeed = 3
                 this.groundMargin = 50
+                this.score = 0
+                this.time = 0
+                this.lives = 3
                 this.background = new Background(this)
                 this.player = new Player(this)
                 this.input = new InputHandler()
+                this.data = new Data(this)
             }
             
             update(deltaTime){
+                this.time += deltaTime
                 this.background.update()
                 this.player.update(this.input.keys, deltaTime)
             }
@@ -28,6 +34,7 @@ window.addEventListener('load', function(){
             draw(context){
                 this.background.draw(context)
                 this.player.draw(context)
+                this.data.draw(context)
             }
         }
 
