@@ -13,12 +13,12 @@ class Layer{
 
     update(){
         // background layer is off the screen
-        if (this.x = -this.width){
+        if (this.x < -this.width){
             this.x = 0
         }
         // move the position of that background layer
         else{
-            this.x = this.game.speed * this.backgroundSpeed
+            this.x -= this.game.gameSpeed * this.backgroundSpeed
         }
     }
 

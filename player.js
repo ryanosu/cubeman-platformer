@@ -1,4 +1,4 @@
-import { Idle, Running} from "./playerStates.js"
+import { Idle, Running, Jumping, Falling} from "./playerStates.js"
 
 // cubeman will go here
 
@@ -11,7 +11,7 @@ export class Player{
         this.widthScaled = this.width * this.scale
         this.heightScaled = this.height * this.scale
         this.x = 0
-        this.y = this.height
+        this.y = this.game.height - 300 - this.game.groundMargin
         this.image = document.getElementById('player')
         this.spriteFrameX = 0
         this.spriteFrameY = 0
@@ -21,7 +21,9 @@ export class Player{
         this.frameTimer = 0
         this.fps = 30
         this.frameInterval = 1000/this.fps
-        this.states = [new Idle(this), new Running(this)]
+        this.gravity = 1
+        this.jump = 0
+        this.states = [new Idle(this), new Running(this), new Jumping(this), new Falling(this)]
         this.currentState = this.states[0]
         this.currentState.enter() // performs enter() in playerStates.js, which updates this.player sprite params
     }
@@ -49,6 +51,15 @@ export class Player{
         // right boundary
         if (this.x > this.game.width - this.widthScaled){
             this.x = this.game.width - this.widthScaled
+        }
+
+        // vertical movement
+        this.y += this.jump // jump starts at 0 and only increments in JUMPING state
+
+        if(!this.onGround()){
+            this.jump += this.gravity
+        } else {
+            this.jump = 0
         }
 
         // sprite animation
@@ -83,9 +94,13 @@ export class Player{
         )
     }
 
-    setState(state, speed){
+    setState(state, passedSpeed){
         this.currentState = this.states[state] // make the switch
-        this.game.speed = this.game.maxSpeed * speed
+        this.game.gameSpeed = this.game.fullGameSpeed * passedSpeed
         this.currentState.enter() // perform the action
+    }
+
+    onGround(){
+        return this.y >= this.game.height - this.heightScaled - 30 - this.game.groundMargin
     }
 }

@@ -55,3 +55,44 @@ export class Running extends State {
         }
     }
 }
+
+export class Jumping extends State {
+    constructor(player){
+        super('JUMPING')
+        this.player = player
+    }
+    
+    enter(){
+        this.player.spriteFrameX = 0 // restart animation
+        this.player.maxSpriteFrameX = 10
+        if(this.player.onGround()){
+            this.player.jump -= 30 // push upwards
+        }
+        this.player.spriteFrameY = 2 // JUMPING row
+    }
+    
+    handleInput(input){
+        if (this.player.jump > this.player.gravity){
+            this.player.setState(states.FALLING, 1)
+        }
+    }
+}
+
+export class Falling extends State {
+    constructor(player){
+        super('FALLING')
+        this.player = player
+    }
+    
+    enter(){
+        this.player.spriteFrameX = 0 // restart animation
+        this.player.maxSpriteFrameX = 10
+        this.player.spriteFrameY = 3 // FALLING row
+    }
+    
+    handleInput(input){
+        if (this.player.onGround()){
+            this.player.setState(states.RUNNING, 1)
+        }
+    }
+}
