@@ -1,7 +1,8 @@
 // array methodology for moving cubeman around
 
 export class InputHandler{
-    constructor(){
+    constructor(game){
+        this.game = game
         this.keys = [];
 
         // add pressed key to array
@@ -15,6 +16,9 @@ export class InputHandler{
                 e.key === 'Control') && 
                 this.keys.indexOf(e.key) === -1){ // if key not already in array
                     this.keys.push(e.key)
+            }
+            else if (e.key === 'd'){ // debug for collision
+                this.game.debug = !this.game.debug // switch to opposite
             }
             console.log("keydown", e.key, this.keys)
         })

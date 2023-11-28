@@ -15,6 +15,6 @@
 }
 
 /* add to canvas, not website */
-#player, #layer1, #layer2, #layer3, #layer4, #layer5, #health, #hair_enemy{
+#player, #layer1, #layer2, #layer3, #layer4, #layer5, #health, #hair_enemy, #doll_ghost_enemy, #collision_animation{
     display: none;
 }

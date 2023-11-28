@@ -2,7 +2,8 @@ import { Background } from "./background.js"
 import { Player } from "./player.js"
 import { InputHandler } from "./input.js"
 import { Data } from "./data.js"
-import { BlueAlien } from "./enemies.js"
+import { HairEnemy, DollGhostEnemy } from "./enemies.js"
+import { AnimateCollision } from "./animateCollision.js"
 
 window.addEventListener('load', function(){
         const canvas = this.document.getElementById('canvas1')
@@ -23,10 +24,12 @@ window.addEventListener('load', function(){
                 this.enemies = []
                 this.enemyTimer = 0
                 this.enemyInterval = 3000 // ms
+                this.debug = false
                 this.background = new Background(this)
                 this.player = new Player(this)
-                this.input = new InputHandler()
+                this.input = new InputHandler(this)
                 this.data = new Data(this)
+                this.collision = new AnimateCollision(this)
             }
             
             update(deltaTime){
@@ -44,7 +47,13 @@ window.addEventListener('load', function(){
                 }
                 
                 // update enemies
+                this.player.checkCollision()
+
                 this.enemies.forEach(enemy =>{
+                    if (enemy.markedForDeletion){
+                        this.score++
+                        this.enemies.splice(this.enemies.indexOf(enemy), 1)
+                    }
                     enemy.update(deltaTime)
                 })
             }
@@ -57,11 +66,17 @@ window.addEventListener('load', function(){
                 this.enemies.forEach(enemy =>{
                     enemy.draw(context)
                 })
+                
+                // display animation
+                //this.collision.draw(context)
             }
 
             addEnemies(){
-                if(this.gameSpeed > 0){
-                    this.enemies.push(new BlueAlien(this))
+                if(this.gameSpeed > 0 && Math.random() > 0.5){
+                    this.enemies.push(new HairEnemy(this))
+                }
+                else if(this.gameSpeed > 0){
+                    this.enemies.push(new DollGhostEnemy(this))
                 }
             }
         }

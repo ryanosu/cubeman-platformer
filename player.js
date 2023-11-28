@@ -82,6 +82,12 @@ export class Player{
     }
 
     draw(context){
+
+        if(this.game.debug){
+            context.lineWidth = 5; // Make lines thick
+            context.strokeRect(this.x, this.y, this.widthScaled, this.heightScaled)
+        }
+
         context.drawImage(
             this.image, // image that we draw
             this.spriteFrameX * this.width, // origin x-coordinate of top-left corner of source rect 
@@ -103,5 +109,25 @@ export class Player{
 
     onGround(){
         return this.y >= this.game.height - this.heightScaled - 30 - this.game.groundMargin
+    }
+
+    checkCollision(){
+
+        // from Player's perspective, check if it's in contact with any enemy
+        this.game.enemies.forEach(enemy => {
+            if(enemy.x < this.x + this.widthScaled && // horizontal
+            enemy.x + enemy.widthScaled > this.x && // horizontal
+            enemy.y < this.y + this.heightScaled && // vertical
+            enemy.y + enemy.heightScaled > this.y){
+                // collision detected
+                console.log("collision")
+
+                // mark for deletion to be deleted soon after checking for markedForDeletion in main.js
+                enemy.markedForDeletion = true
+            }
+            else{
+                // no collision detected
+            }
+        })
     }
 }
