@@ -56,9 +56,9 @@ export class Data{
                     this.game.height * 0.5 - 20
                 )
                 
-                context.font = this.fontSize * 0.7 + 'px ' + this.fontFamily
+                context.font = this.fontSize * 0.9 + 'px ' + this.fontFamily
                 context.fillText(
-                    'Congrats!', 
+                    'Refresh page to restart', 
                     this.game.width * 0.5,
                     this.game.height * 0.5 + 20
                 )
