@@ -36,5 +36,50 @@ export class Data{
                 100 // destination rectangle height on canvas
             )
         }
+
+        // game over messages
+        if (this.game.gameOver){
+            context.fillStyle = "#FF0000" // red
+            context.shadowOffsetX = 2
+            context.shadowOffsetY = 2
+            context.shadowColor = 'white'
+            context.shadowBlur = 0
+            context.shadowColor = 'white'
+            context.textAlign = 'center'
+            context.font = this.fontSize * 10 + 'px ' + this.fontFamily
+            
+            // win
+            if (this.game.score > 5){
+                context.fillText(
+                    'You Win!',
+                    this.game.width * 0.5,
+                    this.game.height * 0.5 - 20
+                )
+                
+                context.font = this.fontSize * 0.7 + 'px ' + this.fontFamily
+                context.fillText(
+                    'Congrats!', 
+                    this.game.width * 0.5,
+                    this.game.height * 0.5 + 20
+                )
+            }
+
+            // lose
+            else{
+                context.fillText(
+                    'You Lose!',
+                    this.game.width * 0.5,
+                    this.game.height * 0.5 - 20
+                )
+
+                context.font = this.fontSize * 0.9 + 'px ' + this.fontFamily
+                context.fillText(
+                    'Refresh page to restart', 
+                    this.game.width * 0.5,
+                    this.game.height * 0.5 + 20
+                )
+            }
+
+        }
     }
 }

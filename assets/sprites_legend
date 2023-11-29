@@ -6,6 +6,8 @@ player.png - 6 rows:
 4: Brusing (BRUSING) - 11 sprites
 5: Attacking (ATTACKING) - 16 sprites
 
-blue_alien.png - 2 rows:
-0: Bruising - 26 sprites
-1: Walking - 21 sprites
+hair_enemy.png - 1 row:
+0: Walking - 13 sprites
+
+doll_ghost_enemy.png - 1 row:
+0: Floating - 30 sprites

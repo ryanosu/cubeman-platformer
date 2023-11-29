@@ -20,20 +20,27 @@ window.addEventListener('load', function(){
                 this.groundMargin = 50
                 this.score = 0
                 this.time = 0
+                this.maxGameTime = 30000 // ms
                 this.lives = 3
                 this.enemies = []
+                this.collisions = []
                 this.enemyTimer = 0
                 this.enemyInterval = 3000 // ms
                 this.debug = false
+                this.gameOver = false
                 this.background = new Background(this)
                 this.player = new Player(this)
                 this.input = new InputHandler(this)
                 this.data = new Data(this)
-                this.collision = new AnimateCollision(this)
             }
             
             update(deltaTime){
                 this.time += deltaTime
+
+                if (this.lives == 0 || this.time > this.maxGameTime){
+                    this.gameOver = true
+                }
+
                 this.background.update()
                 this.player.update(this.input.keys, deltaTime)
                 
@@ -49,13 +56,20 @@ window.addEventListener('load', function(){
                 // update enemies
                 this.player.checkCollision()
 
+                // this.collision.update(deltaTime)
+                 // handle collision sprites
+                this.collisions.forEach((collision, index)=>{
+                    collision.update(deltaTime)
+                    if (collision.markedForDeletion) this.collisions.splice(index, 1)
+                })
+
                 this.enemies.forEach(enemy =>{
                     if (enemy.markedForDeletion){
-                        this.score++
                         this.enemies.splice(this.enemies.indexOf(enemy), 1)
                     }
                     enemy.update(deltaTime)
                 })
+
             }
 
             draw(context){
@@ -68,7 +82,10 @@ window.addEventListener('load', function(){
                 })
                 
                 // display animation
-                //this.collision.draw(context)
+                // this.collision.draw(context)
+                this.collisions.forEach(collision =>{
+                    collision.draw(context)
+                })
             }
 
             addEnemies(){

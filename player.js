@@ -1,4 +1,5 @@
 import { Idle, Running, Jumping, Falling, Attacking, Brusing} from "./playerStates.js"
+import { AnimateCollision } from "./animateCollision.js"
 
 // cubeman will go here
 
@@ -24,7 +25,7 @@ export class Player{
         this.gravity = 1
         this.jump = 0
         this.states = [new Idle(this), new Running(this), new Jumping(this), new Falling(this), new Attacking(this), new Brusing(this)]
-        this.currentState = this.states[0]
+        this.currentState = this.states[0] // default as IDLE
         this.currentState.enter() // performs enter() in playerStates.js, which updates this.player sprite params
     }
 
@@ -115,13 +116,31 @@ export class Player{
 
         // from Player's perspective, check if it's in contact with any enemy
         this.game.enemies.forEach(enemy => {
-            if(enemy.x < this.x + this.widthScaled && // horizontal
-            enemy.x + enemy.widthScaled > this.x && // horizontal
-            enemy.y < this.y + this.heightScaled && // vertical
-            enemy.y + enemy.heightScaled > this.y){
-                // collision detected
-                console.log("collision")
 
+            // if Attacked enemy
+            if(this.currentState instanceof Attacking && 
+                enemy.x < this.x + 40 + this.widthScaled &&
+                enemy.x + enemy.widthScaled > this.x &&
+                enemy.y < this.y + this.heightScaled &&
+                enemy.y + enemy.heightScaled > this.y){
+                // collision detected
+                console.log("enemy punched!")
+                this.game.score++
+                this.game.collisions.push(new AnimateCollision(this.game, enemy.x, enemy.y))
+                 // mark for deletion to be deleted soon after checking for markedForDeletion in main.js
+                 enemy.markedForDeletion = true
+            }
+            
+            // if non-attacking collision
+            else if(enemy.x < this.x - 120 + this.widthScaled && // horizontal right
+            enemy.x + enemy.widthScaled > this.x + 120 && // horizontal left
+            enemy.y < this.y + this.heightScaled - 120 && // vertical up
+            enemy.y + enemy.heightScaled > this.y){ // vertical down
+                // accidental collision detected
+                console.log("accidental collision")
+                this.setState(5, 0)
+                this.game.lives--
+                this.game.collisions.push(new AnimateCollision(this.game, enemy.x, enemy.y))
                 // mark for deletion to be deleted soon after checking for markedForDeletion in main.js
                 enemy.markedForDeletion = true
             }

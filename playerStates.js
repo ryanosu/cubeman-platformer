@@ -32,6 +32,9 @@ export class Idle extends State {
         if (input.includes('ArrowLeft') || input.includes('ArrowRight')){
             this.player.setState(states.RUNNING, 1)
         }
+        else if (input.includes('Control')){
+            this.player.setState(states.ATTACKING, 0)
+        }
     }
 }
 
