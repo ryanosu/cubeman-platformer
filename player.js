@@ -186,11 +186,17 @@ export class Player{
                 this.y + this.heightScaled > platform.y){ // platform.y + 120 (BOTTOM-LEFT CORNER OF CUBEMAN MUST HAVE HIGHER Y-VALUE THAN TOP-LEFT CORNER OF PLATFORM)
 
                     // LANDED ON PLATFORM FROM ABOVE
-                    if(this.y <= platform.y && !this.onPlatformProperty){
+                    // console.log("this.y: ", this.y)
+                    // console.log("this.heightScaled: ", this.heightScaled)
+                    // console.log("left-side addition: ", this.y + this.heightScaled)
+                    // console.log("platform.y: ", platform.y)
+                    // console.log("this.onPlatformProperty:", this.onPlatformProperty)
+                    if(this.y + this.heightScaled - 30 <= platform.y && !this.onPlatformProperty){
                         console.log("Landed from above")
                         this.onPlatformProperty = true
-                        this.y = platform.y - this.heightScaled; // stay on platform
+                        this.y = platform.y - this.heightScaled; // stay on
                         this.jump = 0 // stop rising
+                        //this.setState(0,0)
                     }
 
                     else{
