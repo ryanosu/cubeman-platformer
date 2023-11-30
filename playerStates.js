@@ -76,7 +76,8 @@ export class Jumping extends State {
     enter(){
         this.player.spriteFrameX = 0 // restart animation
         this.player.maxSpriteFrameX = 10
-        if(this.player.onGround()){
+        if(this.player.onGround() || this.player.onPlatform()){
+            console.log("Jumping from ground or platform")
             this.player.jump -= 30 // push upwards
         }
         this.player.spriteFrameY = 2 // JUMPING row
@@ -86,10 +87,10 @@ export class Jumping extends State {
         if (this.player.jump > this.player.gravity){
             this.player.setState(states.FALLING, 1)
         }
-        else if(this.player.onPlatform()){
-            console.log("JUMPING => onPlatform() TRIGGERED")
-            this.player.setState(states.IDLE, 0)
-        }
+        // else if(this.player.onPlatform()){
+        //     console.log("JUMPING => onPlatform() TRIGGERED")
+        //     this.player.setState(states.IDLE, 0)
+        // }
         else if (input.includes('Control')){
             this.player.setState(states.ATTACKING, 0)
         }
@@ -109,11 +110,11 @@ export class Falling extends State {
     }
     
     handleInput(input){
-        if (this.player.onGround()){
+        if (this.player.onGround() || this.player.onPlatform()){
+            console.log("Falling from ground or platform")
             this.player.setState(states.RUNNING, 1)
         }
-        else if(this.player.onPlatform()){
-            console.log("FALLING => onPlatform() TRIGGERED")
+        else if(this.player.onPlatformProperty){
             this.player.setState(states.IDLE, 0)
         }
         else if (input.includes('Control')){

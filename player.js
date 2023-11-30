@@ -12,7 +12,7 @@ export class Player{
         this.widthScaled = this.width * this.scale
         this.heightScaled = this.height * this.scale
         this.x = 0
-        this.y = this.game.height - 300 - this.game.groundMargin
+        this.y = this.game.height - this.heightScaled - 30 - this.game.groundMargin
         this.image = document.getElementById('player')
         this.spriteFrameX = 0
         this.spriteFrameY = 0
@@ -22,15 +22,16 @@ export class Player{
         this.frameTimer = 0
         this.fps = 30
         this.frameInterval = 1000/this.fps
-        this.gravity = 1.4
+        this.gravity = 0.9
         this.jump = 0
+        this.onPlatformProperty = false
         this.states = [new Idle(this), new Running(this), new Jumping(this), new Falling(this), new Attacking(this), new Brusing(this)]
         this.currentState = this.states[0] // default as IDLE
         this.currentState.enter() // performs enter() in playerStates.js, which updates this.player sprite params
     }
 
     update(input, deltaTime){
-        
+
         // update player state
         this.currentState.handleInput(input)
 
@@ -53,14 +54,20 @@ export class Player{
         if (this.x > this.game.width - this.widthScaled){
             this.x = this.game.width - this.widthScaled
         }
+        // bottom boundary
+        // if (this.y > this.game.height - this.heightScaled){
+        //     this.y = this.game.height - this.heightScaled
+        // }
 
         // vertical movement
         this.y += this.jump *2// jump starts at 0 and only increments in JUMPING state
         //this.y += this.jump // does not make the full jump without second one
 
-        if(!this.onGround()){
+        if(!this.onGround() && !this.onPlatformProperty){
             this.jump += this.gravity
-        } else {
+        }
+        // prevents us from falling through the ground
+        else {
             this.jump = 0
         }
 
@@ -116,6 +123,20 @@ export class Player{
         // platform.y = this.game.height - this.game.groundMargin - 600
         // MUST ADD X COORDINATE?
         return this.y + this.heightScaled >= this.game.height - this.game.groundMargin - 600
+
+        // PLATFORM COLLISION
+        // this.game.platforms.forEach(platform =>{
+        //     if(this.x < platform.x + platform.platformWidthScaled && // this.x + 120 (TOP-LEFT CORNER OF CUBEMAN MUST HAVE LOWER X-VALUE THAN TOP-RIGHT CORNER OF PLATFORM)
+        //     this.x + this.widthScaled > platform.x && // this.x - 120 (TOP-RIGHT CORNER OF CUBEMAN MUST HAVE HIGHER X VALUE THAN TOP-LEFT OF PLATFORM)
+        //     this.y < platform.y + platform.platformHeightScaled && // platform.platformHeightScaled - 60 (TOP-LEFT CORNER OF CUBEMAN MUST HAVE LOWER Y-VALUE THAN BOTTOM-LEFT CORNER OF PLATFORM)
+        //     this.y + this.heightScaled > platform.y && // platform.y + 120 (BOTTOM-LEFT CORNER OF CUBEMAN MUST HAVE HIGHER Y-VALUE THAN TOP-LEFT CORNER OF PLATFORM)
+        //     this.y <= platform.y){ // LANDED ON PLATFORM FROM ABOVE
+        //         return true
+        //     }
+        //     else{
+        //         return false
+        //     }
+        // })
     }
 
     checkCollisionEnemy(){
@@ -154,34 +175,36 @@ export class Player{
     }
 
     checkCollisionPlatform(){
+
         // PLATFORM COLLISION
         this.game.platforms.forEach(platform =>{
 
-            if(this.x < platform.x + platform.platformWidthScaled && // this.x + 120
-                this.x + this.widthScaled > platform.x && // this.x - 120
-                this.y < platform.y + platform.platformHeightScaled && // platform.platformHeightScaled - 60
-                this.y + this.heightScaled > platform.y){ // platform.y + 120
-                    //console.log("PLATFORM HIT!")
+            // PLATFORM COLLISION FOUND
+            if(this.x < platform.x + platform.platformWidthScaled && // this.x + 120 (TOP-LEFT CORNER OF CUBEMAN MUST HAVE LOWER X-VALUE THAN TOP-RIGHT CORNER OF PLATFORM)
+                this.x + this.widthScaled > platform.x && // this.x - 120 (TOP-RIGHT CORNER OF CUBEMAN MUST HAVE HIGHER X VALUE THAN TOP-LEFT OF PLATFORM)
+                this.y < platform.y + platform.platformHeightScaled && // platform.platformHeightScaled - 60 (TOP-LEFT CORNER OF CUBEMAN MUST HAVE LOWER Y-VALUE THAN BOTTOM-LEFT CORNER OF PLATFORM)
+                this.y + this.heightScaled > platform.y){ // platform.y + 120 (BOTTOM-LEFT CORNER OF CUBEMAN MUST HAVE HIGHER Y-VALUE THAN TOP-LEFT CORNER OF PLATFORM)
 
-                    // check if player is coming from above to land on top
-                    if(this.y <= platform.y){
-                        console.log("landing on top")
-                        this.y = platform.y - this.heightScaled;
-                        this.jump = 0
+                    // LANDED ON PLATFORM FROM ABOVE
+                    if(this.y <= platform.y && !this.onPlatformProperty){
+                        console.log("Landed from above")
+                        this.onPlatformProperty = true
+                        this.y = platform.y - this.heightScaled; // stay on platform
+                        this.jump = 0 // stop rising
                     }
 
-                    // player is doing anything other than coming from above
                     else{
-                        console.log("Triggered NOT landing on top")
-                        this.y = this.game.height - this.heightScaled - 30 - this.game.groundMargin
-                        this.jump = 0
+                        console.log("Collision that has NOT come from above")
+                        this.onPlatformProperty = false
+                        this.y = this.game.height - this.heightScaled - 30 - this.game.groundMargin // fall to ground
+                        this.jump = 0 // stop rising
                         this.setState(3, 1) // FALLING
                     }
             }
 
             else{
-                // no collision detected
-                //console.log("no collision")
+                // SKIP - NO COLLISION DETECTED
+                this.onPlatformProperty = false
             }
         })
     }

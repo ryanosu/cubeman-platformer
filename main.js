@@ -23,7 +23,7 @@ window.addEventListener('load', function(){
                 this.groundMargin = 50
                 this.score = 0
                 this.time = 0
-                this.maxGameTime = 30000 // ms - 30 seconds
+                this.maxGameTime = 60000 // ms - 30 seconds
                 this.lives = 3
                 this.enemies = []
                 this.collisions = []
@@ -70,7 +70,7 @@ window.addEventListener('load', function(){
                     this.enemyTimer += deltaTime
                 }
 
-                // REGISTER PLAYER INPUT
+                // REGISTER PLAYER INPUT AND MISC
                 this.player.update(this.input.keys, deltaTime)
                 
                 // CHECK FOR COLLISIONS
