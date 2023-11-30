@@ -39,6 +39,7 @@ export class Data{
 
         // game over messages
         if (this.game.gameOver){
+            
             context.fillStyle = "#FF0000" // red
             context.shadowOffsetX = 2
             context.shadowOffsetY = 2

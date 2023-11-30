@@ -22,7 +22,7 @@ export class Player{
         this.frameTimer = 0
         this.fps = 30
         this.frameInterval = 1000/this.fps
-        this.gravity = 1
+        this.gravity = 1.4
         this.jump = 0
         this.states = [new Idle(this), new Running(this), new Jumping(this), new Falling(this), new Attacking(this), new Brusing(this)]
         this.currentState = this.states[0] // default as IDLE
@@ -112,9 +112,14 @@ export class Player{
         return this.y >= this.game.height - this.heightScaled - 30 - this.game.groundMargin
     }
 
-    checkCollision(){
+    onPlatform(){
+        // platform.y = this.game.height - this.game.groundMargin - 600
+        // MUST ADD X COORDINATE?
+        return this.y + this.heightScaled >= this.game.height - this.game.groundMargin - 600
+    }
 
-        // from Player's perspective, check if it's in contact with any enemy
+    checkCollisionEnemy(){
+        // ENEMY COLLISION
         this.game.enemies.forEach(enemy => {
 
             // if Attacked enemy
@@ -124,7 +129,6 @@ export class Player{
                 enemy.y < this.y + this.heightScaled &&
                 enemy.y + enemy.heightScaled > this.y){
                 // collision detected
-                console.log("enemy punched!")
                 this.game.score++
                 this.game.collisions.push(new AnimateCollision(this.game, enemy.x, enemy.y))
                  // mark for deletion to be deleted soon after checking for markedForDeletion in main.js
@@ -137,8 +141,7 @@ export class Player{
             enemy.y < this.y + this.heightScaled - 120 && // vertical up
             enemy.y + enemy.heightScaled > this.y){ // vertical down
                 // accidental collision detected
-                console.log("accidental collision")
-                this.setState(5, 0)
+                this.setState(5, 0) // BRUISING
                 this.game.lives--
                 this.game.collisions.push(new AnimateCollision(this.game, enemy.x, enemy.y))
                 // mark for deletion to be deleted soon after checking for markedForDeletion in main.js
@@ -148,5 +151,45 @@ export class Player{
                 // no collision detected
             }
         })
+    }
+
+    checkCollisionPlatform(){
+        // PLATFORM COLLISION
+        this.game.platforms.forEach(platform =>{
+
+            if(this.x < platform.x + platform.platformWidthScaled && // this.x + 120
+                this.x + this.widthScaled > platform.x && // this.x - 120
+                this.y < platform.y + platform.platformHeightScaled && // platform.platformHeightScaled - 60
+                this.y + this.heightScaled > platform.y){ // platform.y + 120
+                    //console.log("PLATFORM HIT!")
+
+                    // check if player is coming from above to land on top
+                    if(this.y <= platform.y){
+                        console.log("landing on top")
+                        this.y = platform.y - this.heightScaled;
+                        this.jump = 0
+                    }
+
+                    // player is doing anything other than coming from above
+                    else{
+                        console.log("Triggered NOT landing on top")
+                        this.y = this.game.height - this.heightScaled - 30 - this.game.groundMargin
+                        this.jump = 0
+                        this.setState(3, 1) // FALLING
+                    }
+            }
+
+            else{
+                // no collision detected
+                //console.log("no collision")
+            }
+        })
+    }
+
+    checkCollision(){
+
+        this.checkCollisionEnemy()
+        this.checkCollisionPlatform()
+        
     }
 }

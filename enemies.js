@@ -25,7 +25,7 @@ class Enemy{
         }
 
         // check if off screen
-        if(this.x + this.enemyWidth < 0){
+        if(this.x + this.widthScaled < 0){
             this.markedForDeletion = true
         }
     }

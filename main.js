@@ -4,6 +4,7 @@ import { InputHandler } from "./input.js"
 import { Data } from "./data.js"
 import { HairEnemy, DollGhostEnemy } from "./enemies.js"
 import { AnimateCollision } from "./animateCollision.js"
+import { MetalPlatform1 } from "./platforms.js"
 
 window.addEventListener('load', function(){
         const canvas = this.document.getElementById('canvas1')
@@ -11,10 +12,7 @@ window.addEventListener('load', function(){
         canvas.width = 2250 // overall game width
         canvas.height = 1500 // overall game height
 
-        // const audio = document.querySelector("audio");
-        // audio.volume = 0.2;
-        // audio.play();
-        document.getElementById('backgroundMusic').volume = 0.3
+        document.getElementById('backgroundMusic').volume = 0.0
 
         class Game{
             constructor(width, height){
@@ -25,12 +23,15 @@ window.addEventListener('load', function(){
                 this.groundMargin = 50
                 this.score = 0
                 this.time = 0
-                this.maxGameTime = 30000 // ms
+                this.maxGameTime = 30000 // ms - 30 seconds
                 this.lives = 3
                 this.enemies = []
                 this.collisions = []
+                this.platforms = []
                 this.enemyTimer = 0
-                this.enemyInterval = 3000 // ms
+                this.enemyInterval = 3000 // ms - 3 seconds
+                this.platformTimer = 0
+                this.platformInterval = 4000
                 this.debug = false
                 this.gameOver = false
                 this.background = new Background(this)
@@ -40,16 +41,27 @@ window.addEventListener('load', function(){
             }
             
             update(deltaTime){
+                // TIME TRACKER
                 this.time += deltaTime
-
+                
+                // CHECK FOR GAME END
                 if (this.lives == 0 || this.time > this.maxGameTime){
                     this.gameOver = true
                 }
 
+                // SCROLL PARALLAX BACKGROUND
                 this.background.update()
-                this.player.update(this.input.keys, deltaTime)
+
+                // ADD PLATFORMS TO QUEUE
+                if (this.platformTimer > this.platformInterval){
+                    this.addPlatforms()
+                    this.platformTimer = 0
+                }
+                else {
+                    this.platformTimer += deltaTime
+                }
                 
-                // update enemy timer
+                // ADD ENEMIES TO QUEUE
                 if (this.enemyTimer > this.enemyInterval){
                     this.addEnemies()
                     this.enemyTimer = 0
@@ -57,17 +69,20 @@ window.addEventListener('load', function(){
                 else {
                     this.enemyTimer += deltaTime
                 }
+
+                // REGISTER PLAYER INPUT
+                this.player.update(this.input.keys, deltaTime)
                 
-                // update enemies
+                // CHECK FOR COLLISIONS
                 this.player.checkCollision()
 
-                // this.collision.update(deltaTime)
-                 // handle collision sprites
+                 // ENEMY COLLISIONS - UPDATE AND DELETE
                 this.collisions.forEach((collision, index)=>{
                     collision.update(deltaTime)
                     if (collision.markedForDeletion) this.collisions.splice(index, 1)
                 })
 
+                // ENEMIES - UPDATE AND DELETE
                 this.enemies.forEach(enemy =>{
                     if (enemy.markedForDeletion){
                         this.enemies.splice(this.enemies.indexOf(enemy), 1)
@@ -75,19 +90,36 @@ window.addEventListener('load', function(){
                     enemy.update(deltaTime)
                 })
 
+                // PLATFORMS - UPDATE AND DELETE
+                this.platforms.forEach(platform =>{
+                    if (platform.markedForDeletion){
+                        this.platforms.splice(this.platforms.indexOf(platform), 1)
+                    }
+                    platform.update(deltaTime)
+                })
+
             }
 
             draw(context){
                 this.background.draw(context)
+                
+                // DRAW PLATFORMS
+                this.platforms.forEach(platform =>{
+                    platform.draw(context)
+                })
+
+                // DRAW PLAYER
                 this.player.draw(context)
+
+                // DRAW ON-SCREEN DATA
                 this.data.draw(context)
 
+                // DRAW ENEMIES
                 this.enemies.forEach(enemy =>{
                     enemy.draw(context)
                 })
                 
-                // display animation
-                // this.collision.draw(context)
+                // ENEMY COLLISION SPRITES
                 this.collisions.forEach(collision =>{
                     collision.draw(context)
                 })
@@ -99,6 +131,12 @@ window.addEventListener('load', function(){
                 }
                 else if(this.gameSpeed > 0){
                     this.enemies.push(new DollGhostEnemy(this))
+                }
+            }
+
+            addPlatforms(){
+                if(this.gameSpeed > 0 && Math.random() > 0.5){
+                    this.platforms.push(new MetalPlatform1(this))
                 }
             }
         }

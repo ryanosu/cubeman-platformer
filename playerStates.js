@@ -86,6 +86,10 @@ export class Jumping extends State {
         if (this.player.jump > this.player.gravity){
             this.player.setState(states.FALLING, 1)
         }
+        else if(this.player.onPlatform()){
+            console.log("JUMPING => onPlatform() TRIGGERED")
+            this.player.setState(states.IDLE, 0)
+        }
         else if (input.includes('Control')){
             this.player.setState(states.ATTACKING, 0)
         }
@@ -107,6 +111,10 @@ export class Falling extends State {
     handleInput(input){
         if (this.player.onGround()){
             this.player.setState(states.RUNNING, 1)
+        }
+        else if(this.player.onPlatform()){
+            console.log("FALLING => onPlatform() TRIGGERED")
+            this.player.setState(states.IDLE, 0)
         }
         else if (input.includes('Control')){
             this.player.setState(states.ATTACKING, 0)

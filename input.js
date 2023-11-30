@@ -20,7 +20,7 @@ export class InputHandler{
             else if (e.key === 'd'){ // debug for collision
                 this.game.debug = !this.game.debug // switch to opposite
             }
-            console.log("keydown", e.key, this.keys)
+            //console.log("keydown", e.key, this.keys)
         })
 
         // if key in array, remove it
@@ -33,7 +33,7 @@ export class InputHandler{
                 e.key === 'Control'){
                     this.keys.splice(this.keys.indexOf(e.key),1) // 2 args: index, how many elements to remove at that index
             }
-            console.log("keyup", e.key, this.keys)
+            //console.log("keyup", e.key, this.keys)
         })
     }
 }
