@@ -39,6 +39,6 @@ export class MetalPlatform1 extends Platform{
         this.platformWidthScaled = this.platformWidth * this.platformScale
         this.platformHeightScaled = this.platformHeight * this.platformScale
         this.x = this.game.width // right-screen on canvas
-        this.y = this.game.height - this.game.groundMargin - 600// right-screen of canvas
+        this.y = this.game.height - this.game.groundMargin - 600
     }
 }

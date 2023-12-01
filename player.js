@@ -12,7 +12,7 @@ export class Player{
         this.widthScaled = this.width * this.scale
         this.heightScaled = this.height * this.scale
         this.x = 0
-        this.y = this.game.height - this.heightScaled - 30 - this.game.groundMargin
+        this.y = this.game.height - this.heightScaled - this.game.groundMargin
         this.image = document.getElementById('player')
         this.spriteFrameX = 0
         this.spriteFrameY = 0
@@ -32,10 +32,13 @@ export class Player{
 
     update(input, deltaTime){
 
-        // update player state
+        // CHECK FOR COLLISIONS
+        this.checkAllCollisions()
+
+        // UPDATE PLAYER STATE
         this.currentState.handleInput(input)
 
-        // horiztonal movement
+        // HORIZONTAL MOVEMENT
         this.x += this.playerSpeed
         if (input.includes('ArrowRight')){
             this.playerSpeed = this.fullSpeed
@@ -45,7 +48,7 @@ export class Player{
             this.playerSpeed = 0
         }
 
-        // block character at boundaries
+        // HORIZONTAL BOUNDARIES
         // left boundary
         if (this.x < 0) {
             this.x = 0
@@ -54,36 +57,40 @@ export class Player{
         if (this.x > this.game.width - this.widthScaled){
             this.x = this.game.width - this.widthScaled
         }
+
+        // VERTICAL MOVEMENT
+        this.y += this.jump *2
+
+        // VERTICAL BOUNDARIES
         // bottom boundary
-        // if (this.y > this.game.height - this.heightScaled){
-        //     this.y = this.game.height - this.heightScaled
-        // }
+        if (this.y > this.game.height - this.heightScaled - this.game.groundMargin){
+             this.y = this.game.height - this.heightScaled - this.game.groundMargin
+        }
+        // no top boundary
 
-        // vertical movement
-        this.y += this.jump *2// jump starts at 0 and only increments in JUMPING state
-        //this.y += this.jump // does not make the full jump without second one
-
-        if(!this.onGround() && !this.onPlatformProperty){
+        // TOGGLE GRAVITY
+        // start gravity incrementing
+        if(!this.onGround() && this.onPlatformProperty === false){
             this.jump += this.gravity
         }
-        // prevents us from falling through the ground
+        // stop gravity from moving player through the ground and platform
         else {
             this.jump = 0
         }
 
-        // sprite animation
+        // SPRITE ANIMATIONS
         // 1 frame interval complete
         if (this.frameTimer > this.frameInterval){
             this.frameTimer = 0
-            
-            // after 1 frame is complete, go to the next sprite or loop back to 0-index
+            // after 1 frame is complete, go to the next animation sprite or loop back to 0-index
             if (this.spriteFrameX < this.maxSpriteFrameX){
                 this.spriteFrameX++
-                
-            } else {
+            } 
+            else {
                 this.spriteFrameX = 0
             }
         }
+        // 1 frame not yet complete
         else {
             this.frameTimer += deltaTime
         }
@@ -116,13 +123,13 @@ export class Player{
     }
 
     onGround(){
-        return this.y >= this.game.height - this.heightScaled - 30 - this.game.groundMargin
+        return this.y >= this.game.height - this.heightScaled - this.game.groundMargin
     }
 
     onPlatform(){
         // platform.y = this.game.height - this.game.groundMargin - 600
         // MUST ADD X COORDINATE?
-        return this.y + this.heightScaled >= this.game.height - this.game.groundMargin - 600
+        return this.y >= this.game.height - this.heightScaled - this.game.groundMargin - 600
 
         // PLATFORM COLLISION
         // this.game.platforms.forEach(platform =>{
@@ -202,12 +209,11 @@ export class Player{
                     else{
                         console.log("Collision that has NOT come from above")
                         this.onPlatformProperty = false
-                        this.y = this.game.height - this.heightScaled - 30 - this.game.groundMargin // fall to ground
+                        this.y = this.game.height - this.heightScaled - this.game.groundMargin // fall to ground
                         this.jump = 0 // stop rising
                         this.setState(3, 1) // FALLING
                     }
             }
-
             else{
                 // SKIP - NO COLLISION DETECTED
                 this.onPlatformProperty = false
@@ -215,10 +221,8 @@ export class Player{
         })
     }
 
-    checkCollision(){
-
+    checkAllCollisions(){
         this.checkCollisionEnemy()
         this.checkCollisionPlatform()
-        
     }
 }

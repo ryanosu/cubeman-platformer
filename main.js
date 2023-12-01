@@ -72,11 +72,8 @@ window.addEventListener('load', function(){
 
                 // REGISTER PLAYER INPUT AND MISC
                 this.player.update(this.input.keys, deltaTime)
-                
-                // CHECK FOR COLLISIONS
-                this.player.checkCollision()
 
-                 // ENEMY COLLISIONS - UPDATE AND DELETE
+                // ENEMY COLLISIONS - UPDATE AND DELETE
                 this.collisions.forEach((collision, index)=>{
                     collision.update(deltaTime)
                     if (collision.markedForDeletion) this.collisions.splice(index, 1)
@@ -141,11 +138,11 @@ window.addEventListener('load', function(){
             }
         }
 
-        // create game instance
+        // CREATE GAME INSTANCE
         const game = new Game(canvas.width, canvas.height)
         let prevTime = 0
 
-        // animation loop
+        // ANIMATION LOOP
         function animate(timeStamp){
             const deltaTime = timeStamp - prevTime
             prevTime = timeStamp
