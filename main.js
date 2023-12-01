@@ -12,7 +12,8 @@ window.addEventListener('load', function(){
         canvas.width = 2250 // overall game width
         canvas.height = 1500 // overall game height
 
-        document.getElementById('backgroundMusic').volume = 0.0
+        let vol = document.getElementById('backgroundMusic')
+        vol.volume = 0.0
 
         class Game{
             constructor(width, height){

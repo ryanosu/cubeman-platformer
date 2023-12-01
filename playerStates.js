@@ -81,6 +81,8 @@ export class Jumping extends State {
             this.player.jump -= 30 // push upwards
         }
         this.player.spriteFrameY = 2 // JUMPING row
+        // jumping sound effect
+        this.player.soundEffectJump.play()
     }
     
     handleInput(input){
@@ -139,6 +141,10 @@ export class Attacking extends State{
     handleInput(input){
         if (input.includes('ArrowLeft') || input.includes('ArrowRight')){
             this.player.setState(states.RUNNING, 1)
+        }
+        // punching sound effect
+        if(this.player.spriteFrameX == 7){
+            this.player.soundEffectAttack.play()
         }
         // restrict to one animation
         if(this.player.spriteFrameX == 15){
