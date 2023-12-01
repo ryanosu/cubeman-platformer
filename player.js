@@ -127,7 +127,7 @@ export class Player{
     }
 
     onPlatform(){
-        // platform.y = this.game.height - this.game.groundMargin - 600
+        // 600 comes from Platform Class
         // MUST ADD X COORDINATE?
         return this.y >= this.game.height - this.heightScaled - this.game.groundMargin - 600
 
@@ -150,64 +150,55 @@ export class Player{
         // ENEMY COLLISION
         this.game.enemies.forEach(enemy => {
 
-            // if Attacked enemy
+            // IF ATTACKING ENEMY COLLISION
             if(this.currentState instanceof Attacking && 
-                enemy.x < this.x + 40 + this.widthScaled &&
+                enemy.x < this.x + 40 + this.widthScaled && // we want our right-punching animation to extend slightly futher than hitbox
                 enemy.x + enemy.widthScaled > this.x &&
                 enemy.y < this.y + this.heightScaled &&
                 enemy.y + enemy.heightScaled > this.y){
-                // collision detected
-                this.game.score++
-                this.game.collisions.push(new AnimateCollision(this.game, enemy.x, enemy.y))
-                 // mark for deletion to be deleted soon after checking for markedForDeletion in main.js
-                 enemy.markedForDeletion = true
+                    this.game.score++
+                    this.game.collisions.push(new AnimateCollision(this.game, enemy.x, enemy.y))
+                    enemy.markedForDeletion = true
             }
             
-            // if non-attacking collision
-            else if(enemy.x < this.x - 120 + this.widthScaled && // horizontal right
-            enemy.x + enemy.widthScaled > this.x + 120 && // horizontal left
-            enemy.y < this.y + this.heightScaled - 120 && // vertical up
-            enemy.y + enemy.heightScaled > this.y){ // vertical down
-                // accidental collision detected
-                this.setState(5, 0) // BRUISING
-                this.game.lives--
-                this.game.collisions.push(new AnimateCollision(this.game, enemy.x, enemy.y))
-                // mark for deletion to be deleted soon after checking for markedForDeletion in main.js
-                enemy.markedForDeletion = true
+            // IF NON-ATTACKING COLLISION (BRUISING)
+            else if(enemy.x < this.x - 120 + this.widthScaled && // make smaller than full animation frame
+                    enemy.x + enemy.widthScaled > this.x + 120 && // make smaller than full animation frame
+                    enemy.y < this.y + this.heightScaled - 120 && // make smaller than full animation frame
+                    enemy.y + enemy.heightScaled > this.y){
+                        this.setState(5, 0) // BRUISING
+                        this.game.lives--
+                        this.game.collisions.push(new AnimateCollision(this.game, enemy.x, enemy.y))
+                        enemy.markedForDeletion = true
             }
+
+            // NO COLLISION DETECTED
             else{
-                // no collision detected
+                // continue
             }
         })
     }
 
     checkCollisionPlatform(){
-
         // PLATFORM COLLISION
         this.game.platforms.forEach(platform =>{
 
             // PLATFORM COLLISION FOUND
-            if(this.x < platform.x + platform.platformWidthScaled && // this.x + 120 (TOP-LEFT CORNER OF CUBEMAN MUST HAVE LOWER X-VALUE THAN TOP-RIGHT CORNER OF PLATFORM)
-                this.x + this.widthScaled > platform.x && // this.x - 120 (TOP-RIGHT CORNER OF CUBEMAN MUST HAVE HIGHER X VALUE THAN TOP-LEFT OF PLATFORM)
-                this.y < platform.y + platform.platformHeightScaled && // platform.platformHeightScaled - 60 (TOP-LEFT CORNER OF CUBEMAN MUST HAVE LOWER Y-VALUE THAN BOTTOM-LEFT CORNER OF PLATFORM)
-                this.y + this.heightScaled > platform.y){ // platform.y + 120 (BOTTOM-LEFT CORNER OF CUBEMAN MUST HAVE HIGHER Y-VALUE THAN TOP-LEFT CORNER OF PLATFORM)
+            if(this.x < platform.x + platform.platformWidthScaled - 120 && // make smaller than full animation frame
+                this.x + this.widthScaled > platform.x + 120 && // make smaller than full animation frame
+                this.y < platform.y + platform.platformHeightScaled &&
+                this.y + this.heightScaled > platform.y){
 
-                    // LANDED ON PLATFORM FROM ABOVE
-                    // console.log("this.y: ", this.y)
-                    // console.log("this.heightScaled: ", this.heightScaled)
-                    // console.log("left-side addition: ", this.y + this.heightScaled)
-                    // console.log("platform.y: ", platform.y)
-                    // console.log("this.onPlatformProperty:", this.onPlatformProperty)
+                    // COLLISION - LANDED ON PLATFORM
                     if(this.y + this.heightScaled - 30 <= platform.y && !this.onPlatformProperty){
-                        console.log("Landed from above")
                         this.onPlatformProperty = true
-                        this.y = platform.y - this.heightScaled; // stay on
+                        this.y = platform.y - this.heightScaled; // stay on platform
                         this.jump = 0 // stop rising
                         //this.setState(0,0)
                     }
 
+                    // COLLISION - ANYTHING BUT LANDED ON PLATFORM
                     else{
-                        console.log("Collision that has NOT come from above")
                         this.onPlatformProperty = false
                         this.y = this.game.height - this.heightScaled - this.game.groundMargin // fall to ground
                         this.jump = 0 // stop rising

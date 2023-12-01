@@ -87,6 +87,7 @@ export class Jumping extends State {
         if (this.player.jump > this.player.gravity){
             this.player.setState(states.FALLING, 1)
         }
+        // problematic because of onPlatform()
         // else if(this.player.onPlatform()){
         //     console.log("JUMPING => onPlatform() TRIGGERED")
         //     this.player.setState(states.IDLE, 0)
