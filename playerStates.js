@@ -166,9 +166,14 @@ export class Brusing extends State{
     }
 
     handleInput(){
-        // restrict to one animation
-        if(this.player.spriteFrameX == 10){
-            this.player.setState(states.IDLE, 0)
+        // restrict to three animations
+        if(this.player.globalFrameCounter === 0) this.player.soundEffectHurt.play()
+        if(this.player.globalFrameCounter < 60){
+            this.player.globalFrameCounter++
         }
+        else{
+            this.player.globalFrameCounter = 0
+            this.player.setState(states.IDLE, 0)
+        }   
     }
 }

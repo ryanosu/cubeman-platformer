@@ -13,7 +13,7 @@ window.addEventListener('load', function(){
         canvas.height = 1500 // overall game height
 
         let vol = document.getElementById('backgroundMusic')
-        vol.volume = 0.0
+        vol.volume = 0.1
 
         class Game{
             constructor(width, height){
@@ -35,6 +35,9 @@ window.addEventListener('load', function(){
                 this.platformInterval = 4000
                 this.debug = false
                 this.gameOver = false
+                this.soundEffectTeleport = new Audio('assets/teleportEnemy.mp3')
+                this.soundEffectTeleport.volume = 0.3
+                this.soundEffectTeleport.playbackRate = 2.5
                 this.background = new Background(this)
                 this.player = new Player(this)
                 this.input = new InputHandler(this)
@@ -83,6 +86,7 @@ window.addEventListener('load', function(){
                 // ENEMIES - UPDATE AND DELETE
                 this.enemies.forEach(enemy =>{
                     if (enemy.markedForDeletion){
+                        this.soundEffectTeleport.play()
                         this.enemies.splice(this.enemies.indexOf(enemy), 1)
                     }
                     enemy.update(deltaTime)

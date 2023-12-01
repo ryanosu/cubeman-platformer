@@ -25,10 +25,13 @@ export class Player{
         this.gravity = 0.9
         this.jump = 0
         this.onPlatformProperty = false
+        this.globalFrameCounter = 0
         this.soundEffectAttack = new Audio('assets/attack.wav');
         this.soundEffectAttack.volume = 0.3
         this.soundEffectJump = new Audio('assets/jump.wav')
         this.soundEffectJump.volume = 0.3
+        this.soundEffectHurt = new Audio('assets/hurt.wav')
+        this.soundEffectHurt.volume = 0.3
         this.states = [new Idle(this), new Running(this), new Jumping(this), new Falling(this), new Attacking(this), new Brusing(this)]
         this.currentState = this.states[0] // default as IDLE
         this.currentState.enter() // performs enter() in playerStates.js, which updates this.player sprite params
@@ -160,7 +163,7 @@ export class Player{
                 enemy.x + enemy.widthScaled > this.x &&
                 enemy.y < this.y + this.heightScaled &&
                 enemy.y + enemy.heightScaled > this.y &&
-                this.spriteFrameX >= 7){
+                this.spriteFrameX >= 7){ // time push animation with enemy collision animation
                     this.game.score++
                     this.game.collisions.push(new AnimateCollision(this.game, enemy.x, enemy.y))
                     enemy.markedForDeletion = true
