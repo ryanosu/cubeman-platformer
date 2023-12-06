@@ -1,7 +1,11 @@
 # Cubeman
 
-This is a 2d platformer game written in JavaScript and HTML Canvas that is a work in-progress.
+This is a 2d platformer game written in JavaScript and HTML Canvas
 
-To play Cubeman run it on a local server. I simply use VS Code's Live Server Extension.
+Thus far the game features 2-dimensional physics, moving enemies, collision detection, sound effects, a parallax background, and a character with 6 different state-based design patterns and animations
 
-Thus far the game features a controllable character, collision detection, numerous 2d sprite animations, enemies, and a parallax background.
+To play Cubeman visit: 
+
+```sh
+https://ryanosu.github.io/cubeman-platformer/
+```
