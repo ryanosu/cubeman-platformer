@@ -9,3 +9,9 @@ To play Cubeman visit:
 ```sh
 https://ryanosu.github.io/cubeman-platformer/
 ```
+
+Keyboard Controls:
+
+Arrow keys: Move
+
+Ctrl key: Attack
